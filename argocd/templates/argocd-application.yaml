@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{.Values.adaptationservice.namespace}}
+  namespace: {{.Values.argocd.namespace}}
+spec:
+  project: {{.Values.adaptationservice.project}}
+  source:
+    repoURL: {{.Values.adaptationservice.repoUrl}}
+    targetRevision: HEAD
+    path: adaptation
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{.Values.adaptationservice.namespace}}
