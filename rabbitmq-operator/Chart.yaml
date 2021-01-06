@@ -1,0 +1,3 @@
+apiVersion: v2
+name: rabbitmq-operator
+version: 0.0.3

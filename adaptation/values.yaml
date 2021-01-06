@@ -1,0 +1,157 @@
+environment:
+rabbitmqService:
+  name: rabbitmq-service
+  port: 5672
+  component: rabbitmq
+  app: taskQueue
+  key: rabbitmq-cluster-operator
+serviceAccount:
+  adaptationname: adaptation-service-sa
+  archiveadaptationname: archive-adaptation-service-sa
+  policyupdatename: policy-update-service-sa
+  janitorname: pod-janitor-sa
+volumemountpath:
+  source: "/var/source"
+  target: "/var/target"
+queue:
+  messagebrokersecret: "rabbitmq-service-default-user"
+  host:
+    url: "rabbitmq-service" # this should be deprecated in preference to queue specific hostname
+    port: "\"5672\"" # this should be deprecated in preference to queue specific port
+  adaptationRequest:
+    exchangename: "adaptation-exchange"
+    requestqueuename: "adaptation-request-queue"
+    replyqueuename: "amq.rabbitmq.reply-to"
+    messagename: "adaptation-request"
+    hostname: "rabbitmq-service"
+    port: "\"5672\""
+  archiveadaptationrequest:
+    hostname: "rabbitmq-service"
+    port: "\"5672\""
+  transactionevent:
+    hostname: "rabbitmq-service"
+    port: "\"5672\""
+adaptationservice:
+  name: adaptation-service
+  namespace: icap-adaptation
+  replicas: 1
+  amqpurl: "amqp://guest:guest@rabbitmq-service:5672/"
+  rolename: adaptation-service-role
+archiveadaptationservice:
+  name: archive-adaptation-service
+  namespace: icap-adaptation
+  replicas: 1
+  amqpurl: "amqp://guest:guest@rabbitmq-service:5672/"
+  exchange: adaptation-exchange
+  rolename: archive-adaptation-service-role
+icapservice:
+  name: mvp-icap-service
+  applabel: adaptation
+  replicas: 1
+  port: 1344
+  tlsport: 1345
+  enableFileId: true
+icapserviceconfig:
+  processingtimeoutduration: 00:01:00
+podjanitor:
+  name: pod-janitor
+  namespace: icap-adaptation
+  rolename: janitor-role
+  deleteSuccessfulAfter: 1m
+  deleteFailedAfter: 3m
+eventsubmissionservice:
+  name: event-submission-service
+  replicas: 1
+  amqpurl: "" # this should be deprecated in preference to queue specific hostname
+policyupdateservice:
+  name: policy-update-service
+  applabel: policyupdate
+  replicas: 1
+  port: 10000
+  rolename: policy-update-service-role
+requestprocessingservice:
+  configmapname: request-processing-config
+transactionqueryservice:
+  fullnameOverride: transaction-query-service
+  replicaCount: 1
+  imagePullSecrets: []
+  service:
+    type: ClusterIP
+    port: 443
+  deployment:
+    containerPort: 443
+  probes:
+    enabled: false
+  ingress:
+    enabled: false
+    annotations: {}
+    path: /
+    tls: []
+  volumes:
+    transactionstore:
+      shareName: transactions
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+transactionstore:
+  resourceGroup: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreResourceGroup>>"
+  storageAccount: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreStorageAccount>>"
+  shareName: transactions
+  storage: 100Gi
+imagestore:
+  rabbitmq:
+    registry: "docker.io/"
+    repository: rabbitmq
+    tag: 3.8
+  requestprocessing:
+    registry: ""
+    repository: glasswallsolutions/icap-request-processing
+    tag: develop-2cce03e
+  adaptationservice:
+    registry: ""
+    repository: glasswallsolutions/icap-adaptation-service
+    tag: develop-db95e26
+  podjanitor:
+    registry: ""
+    repository: glasswallsolutions/pod-janitor
+    tag: develop-dd4c0f8
+  icapservice:
+    registry: ""
+    repository: glasswallsolutions/mvp-icap-service
+    tag: develop-7cfec20
+  eventsubmission:
+    registry: ""
+    repository: glasswallsolutions/event-submission-service
+    tag: develop-3e609e6
+  policyupdate:
+    registry: ""
+    repository: glasswallsolutions/policy-update-service
+    tag: develop-20f889d
+  archiveadaptationservice:
+    registry: ""
+    repository: glasswallsolutions/archive-adaptation-service
+    tag: develop-f2f04eb
+  archiveprocessingservice:
+    registry: ""
+    repository: glasswallsolutions/archive-processing-service
+    tag: develop-d868800
+  transactionqueryservice:
+    registry: ""
+    repository: glasswallsolutions/transaction-query-service
+    tag: develop-57d0adb
+secrets:
+  transactionstore:
+    accountName: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreAccountName>>"
+    accountKey: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreAccountKey>>"
+  containerregistry:
+    dockerconfigjson: "<<https://gw-icap-keyvault.vault.azure.net/secrets/az-registry-dockerconfig>>"
+  mvpicapservice:
+    tlsCert: "<<https://gw-icap-keyvault.vault.azure.net/secrets/mvpicapserviceTlsCert>>"
+    tlsKey: "<<https://gw-icap-keyvault.vault.azure.net/secrets/mvpicapserviceTlsKey>>"
+  policyupdateservice:
+    username: "<<https://gw-icap-keyvault.vault.azure.net/secrets/policyUpdateUsername>>"
+    password: "<<https://gw-icap-keyvault.vault.azure.net/secrets/policyUpdatePassword>>"
+  transactionqueryservicepv:
+    azurestorageaccountname: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreAccountName>>"
+    azurestorageaccountkey: "<<https://gw-icap-keyvault.vault.azure.net/secrets/transactionStoreAccountKey>>"
