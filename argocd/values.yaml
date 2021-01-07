@@ -957,7 +957,7 @@ openshift:
 adaptationservice:
   name: adaptation-service
   namespace: icap-adaptation
-  project: icapservice
+  project: default
   repoUrl: http://gw-git-server-z1-dev-ukw.icap-proxy.curlywurly.me/icap-infrastructure.git
 
 argocd:
