@@ -961,4 +961,4 @@ adaptationservice:
   repoUrl: http://gw-git-server-z1-dev-ukw.icap-proxy.curlywurly.me/icap-infrastructure.git
 
 argocd:
-  namespace: argocd
+  namespace: argo-cd
