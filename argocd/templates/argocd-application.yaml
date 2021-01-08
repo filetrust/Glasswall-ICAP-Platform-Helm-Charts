@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: {{.Values.adaptationservice.repoUrl}}
     targetRevision: HEAD
-    chart: icap-adaptation
+    path: adaptation
   destination:
     server: https://kubernetes.default.svc
     namespace: {{.Values.adaptationservice.namespace}}
