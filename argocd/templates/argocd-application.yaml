@@ -7,7 +7,6 @@ spec:
   project: {{.Values.adaptationservice.project}}
   source:
     repoURL: {{.Values.adaptationservice.repoUrl}}
-    targetRevision: HEAD
     chart: {{.Values.adaptationservice.namespace}}
   destination:
     server: https://kubernetes.default.svc
