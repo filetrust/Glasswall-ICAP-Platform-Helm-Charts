@@ -7,6 +7,9 @@ spec:
   project: {{.Values.adaptationservice.project}}
   syncPolicy:
     automated: {}
+    syncOptions:
+      validate: false
+      createNamespace: true
   source:
     repoURL: {{.Values.adaptationservice.repoUrl}}
     targetRevision: HEAD
