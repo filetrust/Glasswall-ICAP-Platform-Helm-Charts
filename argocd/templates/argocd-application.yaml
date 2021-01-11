@@ -13,7 +13,7 @@ spec:
 
   source:
     repoURL: {{.Values.adaptationservice.repoUrl}}
-    targetRevision: HEAD
+    targetRevision: add-image-registry
     path: adaptation
   destination:
     server: https://kubernetes.default.svc
