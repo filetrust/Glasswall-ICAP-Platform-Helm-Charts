@@ -5,6 +5,8 @@ metadata:
   namespace: {{.Values.argocd.namespace}}
 spec:
   project: {{.Values.adaptationservice.project}}
+  syncPolicy:
+    automated: {}
   source:
     repoURL: {{.Values.adaptationservice.repoUrl}}
     targetRevision: HEAD
